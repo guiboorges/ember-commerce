@@ -16,7 +16,7 @@ export function Accounts({ api }: { api: EmberApi }) {
     <>
       <PageHead title="Accounts & wallets" subtitle="One balance in three currencies, converted to euros at fixed demo rates." />
       <div className="row row-1"><BalanceCard api={api} />
-        <Card title="Wallets" subtitle="Daily limits and status">
+        <Card title="Wallets" subtitle="Monthly limits and status">
           <div className="wallets big">{api.wallets.map(w => <WalletCard key={w.currency} symbol={SYMBOL[w.currency]} code={w.currency} amount={money(w.balance, w.currency)} limit={LIMIT_TEXT[w.currency]} active={w.active} />)}</div>
           <p className="t-caption c-secondary">The GBP wallet is paused: it can receive money but not send it.</p>
         </Card>

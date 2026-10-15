@@ -333,3 +333,5 @@ hr { border: 0; height: 1px; background: var(--ember-border-subtle); width: 100%
   .kpi-grid { grid-template-columns: minmax(0, 1fr); }
   .btn-row { grid-template-columns: minmax(0, 1fr); }
 }
+
+.wallets:not(.big) .wallet .t-h3 { font-size: 13px; }

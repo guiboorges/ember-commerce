@@ -31,7 +31,7 @@ export function AllOrders({ api, onOpen }: { api: EmberApi; onOpen: (no: number)
   const openReturns = returnRequests(api.today, api.nowMinute).filter(r => !api.state.returns[r.id]).length
   return (
     <>
-      <PageHead title="All orders" subtitle={`${num(month.length)} orders this month · ${today} today. Select rows to ship or export them.`}>
+      <PageHead title="All orders" subtitle={`${num(month.length)} orders this month · ${today} today.`}>
         <Button kind="secondary" icon={Download} onClick={() => exportOrders(list, 'kiln-orders.csv')}>Export CSV</Button>
       </PageHead>
       <div className="kpi-row">

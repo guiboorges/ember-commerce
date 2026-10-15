@@ -67,6 +67,21 @@ export function OrdersTable({ api, list, selectable = true, onOpen, empty = 'No 
           })}
         </tbody>
       </table>
+      <ul className="m-orders" aria-label="Orders">
+        {list.map(o => {
+          const c = customerById[o.customerId]
+          return (
+            <li key={o.no}>
+              <button type="button" className="m-order" onClick={() => onOpen(o.no)} aria-label={`${orderId(o.no)}, ${c.name}, ${eur(o.total)}, ${o.status}. Open`}>
+                <Avatar initials={c.initials} size={40} />
+                <span className="list-text grow"><span className="t-body-medium truncate">{c.name}</span><span className="t-caption c-secondary">{orderId(o.no)} · {o.day === api.today ? time(o).split(', ')[1] : time(o)}</span></span>
+                <span className="m-order-end"><span className="t-numeric tnum">{eur(o.total)}</span><Status status={o.status} /></span>
+              </button>
+              {extra && <span className="m-extra">{extra(o)}</span>}
+            </li>
+          )
+        })}
+      </ul>
       {!list.length && <Empty>{empty}</Empty>}
     </div>
   )

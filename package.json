@@ -1,7 +1,7 @@
 {
   "name": "ember-commerce",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "description": "A working business dashboard for an online store, built with the Ember design system: money, wallets, cards, and orders, running on a simulated shop.",
   "scripts": {

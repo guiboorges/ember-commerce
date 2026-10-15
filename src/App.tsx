@@ -4,7 +4,8 @@ import { AREAS, href, parseHash } from './nav'
 import { alerts as computeAlerts } from './sim/alerts'
 import { CUSTOMERS, customerById, orderId, PRODUCTS } from './sim/catalog'
 import { useEmber } from './sim/useEmber'
-import { OrderDialog } from './components/shared'
+import { MoneyDialog, OrderDialog } from './components/shared'
+import { CreateSheet, MobileTopBar, MORE_AREAS, MorePage, Submenu, TabBar } from './components/mobile'
 import { Avatar, Dialog, eur, IconButton, STROKE } from './components/ui'
 import { ActivityPage, AlertsPage, Dashboard } from './pages/overview'
 import { AllOrders, Carts, Returns, Shipping } from './pages/orders'
@@ -32,16 +33,19 @@ export default function App() {
   const [menu, setMenu] = useState<null | 'bell' | 'user'>(null)
   const [searchOpen, setSearchOpen] = useState(false)
   const [order, setOrder] = useState<number | null>(null)
+  const [more, setMore] = useState(() => location.hash === '#/more')
+  const [sheet, setSheet] = useState(false)
+  const [money, setMoney] = useState<null | 'transfer' | 'request'>(null)
   const mainRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
-    const on = () => { setRoute(parseHash(location.hash)); window.scrollTo({ top: 0 }); mainRef.current?.focus({ preventScroll: true }) }
+    const on = () => { setRoute(parseHash(location.hash)); setMore(location.hash === '#/more'); window.scrollTo({ top: 0 }); mainRef.current?.focus({ preventScroll: true }) }
     window.addEventListener('hashchange', on)
     return () => window.removeEventListener('hashchange', on)
   }, [])
   useEffect(() => { document.documentElement.dataset.theme = theme; write('ember-commerce:theme', theme) }, [theme])
   useEffect(() => { write('ember-commerce:sidebar', collapsed ? 'collapsed' : 'expanded') }, [collapsed])
-  useEffect(() => { document.title = `${route.page.label} · ${route.area.label} — Ember` }, [route])
+  useEffect(() => { document.title = more ? 'More — Ember' : `${route.page.label} · ${route.area.label} — Ember` }, [route, more])
   useEffect(() => {
     const key = (e: KeyboardEvent) => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); setSearchOpen(true) } if (e.key === 'Escape') setMenu(null) }
     const down = (e: MouseEvent) => { if (!(e.target as HTMLElement).closest('.anchor')) setMenu(null) }
@@ -53,7 +57,8 @@ export default function App() {
   const { area, page } = route
   const open = (no: number) => setOrder(no)
 
-  const content: ReactNode = (() => {
+  const activeTab = more || MORE_AREAS.includes(area.id) ? 'more' : area.id
+  const content: ReactNode = more ? <MorePage theme={theme} setTheme={setTheme} onReset={() => api.act({ type: 'reset' })} /> : (() => {
     switch (`${area.id}/${page.id}`) {
       case 'overview/activity': return <ActivityPage api={api} onOpen={open} />
       case 'overview/alerts': return <AlertsPage api={api} />
@@ -87,6 +92,7 @@ export default function App() {
     <>
       <a className="skip" href="#main">Skip to content</a>
       <div className="window" data-collapsed={collapsed || undefined}>
+        <MobileTopBar api={api} alertCount={alertCount} onSearch={() => setSearchOpen(true)} />
         <header className="header">
           <a className="pill logo" href={href('overview')} aria-label="Ember, go to the dashboard"><span className="logo-mark" aria-hidden="true">e</span><span className="t-h3">Ember</span></a>
           <nav className="pill tabs" aria-label="Areas">
@@ -150,11 +156,15 @@ export default function App() {
               <button type="button" className="side-link" onClick={() => api.act({ type: 'reset' })} title={collapsed ? 'Reset demo' : undefined} aria-label={collapsed ? 'Reset demo' : undefined}><RotateCcw size={18} strokeWidth={STROKE} aria-hidden="true" />{!collapsed && <span>Reset demo</span>}</button>
             </div>
           </nav>
-          <main className="content" id="main" ref={mainRef} tabIndex={-1}>{content}</main>
+          <main className="content" id="main" ref={mainRef} tabIndex={-1}>{!more && <Submenu area={area} page={page} />}{content}</main>
         </div>
       </div>
       <p className="footnote t-caption c-secondary">Ember demo · Kiln &amp; Co. is a simulated shop; every order, customer, and figure is generated. Built with the Ember design system.</p>
 
+      <TabBar active={activeTab} onCreate={() => setSheet(true)} />
+      <CreateSheet api={api} open={sheet} onClose={() => setSheet(false)} onMoney={setMoney} />
+      <MoneyDialog api={api} mode="transfer" open={money === 'transfer'} onClose={() => setMoney(null)} />
+      <MoneyDialog api={api} mode="request" open={money === 'request'} onClose={() => setMoney(null)} />
       <OrderDialog api={api} no={order} onClose={() => setOrder(null)} />
       <SearchDialog api={api} open={searchOpen} onClose={() => setSearchOpen(false)} onOpen={no => { setSearchOpen(false); setOrder(no) }} />
     </>

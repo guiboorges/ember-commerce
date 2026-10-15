@@ -10,9 +10,11 @@ between wallets, freeze cards, pay supplier bills and VAT, and watch the numbers
 
 ![Overview in light mode](docs/screenshots/overview-light.png)
 
-| Dark mode | Phone (light and dark) |
-|---|---|
-| ![Overview in dark mode](docs/screenshots/overview-dark.png) | ![Overview and All orders on 390 px phone screens](docs/screenshots/mobile.png) |
+![Overview in dark mode](docs/screenshots/overview-dark.png)
+
+**On phones**, a bottom tab bar like Instagram's: Home, Orders, a **+** for quick actions, Finance, and More.
+
+![Phone screens: Home, All orders, the Create sheet, and Shipping in dark mode, each with the bottom tab bar](docs/screenshots/mobile.png)
 
 | Orders, sidebar collapsed | Profit & loss | Cards |
 |---|---|---|
@@ -21,7 +23,8 @@ between wallets, freeze cards, pay supplier bills and VAT, and watch the numbers
 ## Menu and submenu
 
 The top tabs choose an area; the sidebar shows that area's pages. Every page has its own address (`#/orders/returns`),
-so links and the back button work. Collapse the sidebar to icons with the « button; the choice is remembered.
+so links and the back button work. Collapse the sidebar to icons with the « button; the choice is remembered. On phones (under 600 px) the areas move to a
+bottom tab bar (Home, Orders, +, Finance, More), and the pages become a scrolling row under the title.
 
 | Area | Pages |
 |---|---|
